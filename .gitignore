@@ -1,0 +1,32 @@
+# 🔥 Arquivos compilados
+*.class
+
+# 📦 Pasta de build
+/target/
+/build/
+
+# 🧠 IDE NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+
+
+# 🔐 Arquivos de configuração sensíveis
+persistence.xml
+
+# ⚙️ Logs
+*.log
+
+# 🧪 Arquivos temporários
+*.tmp
+*.swp
+
+# 🖼️ Sistema operacional
+.DS_Store
+Thumbs.db
+
+# 🔑 Arquivos de ambiente
+.env
