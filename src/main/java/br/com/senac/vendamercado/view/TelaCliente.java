@@ -4,18 +4,66 @@
  */
 package br.com.senac.vendamercado.view;
 
+import br.com.senac.vendamercado.dao.ClienteDAO;
+import br.com.senac.vendamercado.data.Cliente;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author vitor
  */
 public class TelaCliente extends javax.swing.JFrame {
+    
+    private int idClienteSelecionado = -1;
 
-    /**
-     * Creates new form TelaCliente
-     */
-    public TelaCliente() {
-        initComponents();
+       private Cliente cliente;
+   private ClienteDAO clientedao = new ClienteDAO();
+   
+  private void carregarLista() {
+    try {
+        List<Cliente> lista = clientedao.listarTodos();
+        atualizarTabela(lista);
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Erro ao carregar dados");
     }
+}
+  
+  private void atualizarTabela(List<Cliente> lista) {
+    DefaultTableModel model = (DefaultTableModel) tabelaCliente.getModel();
+    model.setRowCount(0);
+
+    for (Cliente c : lista) {
+        model.addRow(new Object[]{
+            c.getId(),
+            c.getNome(),
+            c.getTelefone()
+           
+        });
+    }
+}
+  
+  
+
+  
+   
+   
+   private void limparCampos() {
+    txtnome.setText("");
+    txttelefone.setText("");
+   
+
+   }
+   
+  
+    
+      public TelaCliente() {
+    initComponents();
+    carregarLista();
+    this.cliente = new Cliente();
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -56,6 +104,11 @@ public class TelaCliente extends javax.swing.JFrame {
         jLabel2.setText("Telefone");
 
         btncadastrar.setText("cadastrar");
+        btncadastrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncadastrarActionPerformed(evt);
+            }
+        });
 
         tabelaCliente.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -74,6 +127,11 @@ public class TelaCliente extends javax.swing.JFrame {
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+        });
+        tabelaCliente.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaClienteMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tabelaCliente);
@@ -135,9 +193,9 @@ public class TelaCliente extends javax.swing.JFrame {
                                 .addComponent(btnbuscar))
                             .addComponent(btncadastrar)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
+                        .addGap(26, 26, 26)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,10 +215,10 @@ public class TelaCliente extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnbuscar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnatualizar)
                     .addComponent(btnexcluir))
                 .addContainerGap(68, Short.MAX_VALUE))
@@ -183,16 +241,127 @@ public class TelaCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnexcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnexcluirActionPerformed
-        // TODO add your handling code here:
+        int linha = tabelaCliente.getSelectedRow();
+        
+        if (linha == -1){
+            JOptionPane.showMessageDialog(this, "Selecione um cliente");
+            return;
+        }
+        
+        int id = (int) tabelaCliente.getValueAt(linha,0);
+        clientedao.deletar(id);
+        
+        JOptionPane.showMessageDialog(this, "Cliente excluido com sucesso");
+        carregarLista();
     }//GEN-LAST:event_btnexcluirActionPerformed
 
     private void btnatualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnatualizarActionPerformed
-        // TODO add your handling code here:
+      ClienteDAO dao = new ClienteDAO();
+        
+        int linha = tabelaCliente.getSelectedRow();
+        
+        
+        
+        if(linha == -1){
+            JOptionPane.showMessageDialog(this," Selecione um cliente");
+            return;
+        }
+        
+        int id = (int) tabelaCliente.getValueAt(linha, 0);
+        Cliente cliente = clientedao.buscarPorId(id);
+        
+       
+      
+      cliente.setNome(txtnome.getText());
+      cliente.setTelefone(txttelefone.getText());
+       
+      
+      
+       dao.atualizar(cliente);
+        
+        idClienteSelecionado = cliente.getId();
+        
+        
+         JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso");
+        carregarLista();
+     
+        
+        
+        
     }//GEN-LAST:event_btnatualizarActionPerformed
 
     private void btnbuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbuscarActionPerformed
-        // TODO add your handling code here:
+        if(txtid.getText().trim().isEmpty()){
+        JOptionPane.showMessageDialog(this, "Digite um ID");
+        return;
+    }
+
+    try {
+        int id = Integer.parseInt(txtid.getText());
+        Cliente cliente = clientedao.buscarPorId(id);
+
+        if(cliente == null){
+            JOptionPane.showMessageDialog(this, "Cliente não encontrado");
+            return;
+        }
+
+     
+        txtnome.setText(cliente.getNome());
+        txttelefone.setText(cliente.getTelefone());
+
+        
+        idClienteSelecionado = cliente.getId();
+
+        
+        DefaultTableModel modelo = (DefaultTableModel) tabelaCliente.getModel();
+        modelo.setRowCount(0); 
+
+        modelo.addRow(new Object[]{
+            cliente.getId(),
+            cliente.getNome(),
+            cliente.getTelefone()
+        });
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Digite um número válido");
+    }
     }//GEN-LAST:event_btnbuscarActionPerformed
+
+    private void btncadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncadastrarActionPerformed
+         ClienteDAO dao = new ClienteDAO();
+        
+        if(cliente == null){
+           cliente = new Cliente();
+        }
+        
+      
+      cliente.setNome(txtnome.getText());
+      cliente.setTelefone(txttelefone.getText());
+         
+      dao.cadastrar(cliente);
+      
+     JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso");
+        carregarLista();
+     
+    }//GEN-LAST:event_btncadastrarActionPerformed
+
+    private void tabelaClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaClienteMouseClicked
+         
+    int linha = tabelaCliente.getSelectedRow();
+    
+    if(linha != -1){
+        int id = (int) tabelaCliente.getValueAt(linha, 0);
+        
+        Cliente cliente = clientedao.buscarPorId(id);
+        
+       
+        txtnome.setText(cliente.getNome());
+        txttelefone.setText(cliente.getTelefone());
+        
+      
+        idClienteSelecionado = cliente.getId();
+    }
+    }//GEN-LAST:event_tabelaClienteMouseClicked
 
     /**
      * @param args the command line arguments
