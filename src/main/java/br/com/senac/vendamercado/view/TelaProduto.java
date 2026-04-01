@@ -4,17 +4,67 @@
  */
 package br.com.senac.vendamercado.view;
 
+import br.com.senac.vendamercado.dao.ProdutoDAO;
+import br.com.senac.vendamercado.data.Produto;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author vitor
  */
 public class TelaProduto extends javax.swing.JFrame {
+ private int idProdutoSelecionado = -1;
 
-    /**
-     * Creates new form TelaCliente
-     */
+       private Produto produto;
+   private ProdutoDAO produtodao = new ProdutoDAO();
+   
+  private void carregarLista() {
+    try {
+        List<Produto> lista = produtodao.listarTodos();
+        atualizarTabela(lista);
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Erro ao carregar dados");
+    }
+}
+  
+  private void atualizarTabela(List<Produto> lista) {
+    DefaultTableModel model = (DefaultTableModel) tabelaProduto.getModel();
+    model.setRowCount(0);
+
+    for (Produto p : lista) {
+        model.addRow(new Object[]{
+            p.getId(),
+            p.getNome(),
+            p.getCategoria(),
+            p.getPreco(),
+            p.getEstoque()
+           
+        });
+    }
+}
+  
+  
+
+  
+   
+   
+   private void limparCampos() {
+    txtnome.setText("");
+    txtcategoria.setText("");
+    txtpreco.setText("");;
+    txtestoque.setText("");
+   
+
+   }
+   
+  
     public TelaProduto() {
         initComponents();
+         carregarLista();
+    this.produto = new Produto();
     }
 
     /**
@@ -34,19 +84,20 @@ public class TelaProduto extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtnome = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txttelefone = new javax.swing.JTextField();
+        txtcategoria = new javax.swing.JTextField();
         btncadastrar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tabelaCliente = new javax.swing.JTable();
+        tabelaProduto = new javax.swing.JTable();
         btnatualizar = new javax.swing.JButton();
         btnexcluir = new javax.swing.JButton();
         btnbuscar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtid = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtpreco = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtestoque = new javax.swing.JTextField();
+        btnLimpar = new javax.swing.JButton();
 
         jList1.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -66,27 +117,37 @@ public class TelaProduto extends javax.swing.JFrame {
         jLabel2.setText("Categoria");
 
         btncadastrar.setText("cadastrar");
+        btncadastrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncadastrarActionPerformed(evt);
+            }
+        });
 
-        tabelaCliente.setModel(new javax.swing.table.DefaultTableModel(
+        tabelaProduto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "id", "nome", "telefone"
+                "id", "nome", "Categoria", "Preço", "estoque"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tabelaCliente);
+        tabelaProduto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaProdutoMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabelaProduto);
 
         btnatualizar.setText("atualizar");
         btnatualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -113,13 +174,20 @@ public class TelaProduto extends javax.swing.JFrame {
 
         jLabel4.setText("preço");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtpreco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtprecoActionPerformed(evt);
             }
         });
 
         jLabel5.setText("estoque");
+
+        btnLimpar.setText("Limpar");
+        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimparActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -146,12 +214,12 @@ public class TelaProduto extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtestoque, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txttelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(txtpreco, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtcategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(18, Short.MAX_VALUE)
@@ -168,6 +236,8 @@ public class TelaProduto extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(142, 142, 142)
                 .addComponent(btncadastrar)
+                .addGap(18, 18, 18)
+                .addComponent(btnLimpar)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -180,17 +250,19 @@ public class TelaProduto extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txttelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtcategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtpreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtestoque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(btncadastrar)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btncadastrar)
+                    .addComponent(btnLimpar))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -222,20 +294,134 @@ public class TelaProduto extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnexcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnexcluirActionPerformed
-        // TODO add your handling code here:
+         int linha = tabelaProduto.getSelectedRow();
+        
+        if (linha == -1){
+            JOptionPane.showMessageDialog(this, "Selecione um produto");
+            return;
+        }
+        
+        int id = (int) tabelaProduto.getValueAt(linha,0);
+        produtodao.deletar(id);
+        
+        JOptionPane.showMessageDialog(this, "Produto excluido com sucesso");
+        carregarLista();
     }//GEN-LAST:event_btnexcluirActionPerformed
 
     private void btnatualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnatualizarActionPerformed
-        // TODO add your handling code here:
+          if(idProdutoSelecionado == -1){
+    JOptionPane.showMessageDialog(this,"Selecione um produto");
+    return;
+}
+
+Produto produto = produtodao.buscarPorId(idProdutoSelecionado);
+
+produto.setNome(txtnome.getText());
+produto.setCategoria(txtcategoria.getText());
+produto.setPreco(Double.parseDouble(txtpreco.getText()));
+produto.setEstoque(Integer.parseInt(txtestoque.getText()));
+
+new ProdutoDAO().atualizar(produto);
+
+JOptionPane.showMessageDialog(this, "Produto atualizado com sucesso");
+
+idProdutoSelecionado = -1;
+carregarLista();
+        
     }//GEN-LAST:event_btnatualizarActionPerformed
 
     private void btnbuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbuscarActionPerformed
-        // TODO add your handling code here:
+         if(txtid.getText().trim().isEmpty()){
+        JOptionPane.showMessageDialog(this, "Digite um ID");
+        return;
+    }
+
+    try {
+        int id = Integer.parseInt(txtid.getText());
+        Produto produto = produtodao.buscarPorId(id);
+
+        if(produto == null){
+            JOptionPane.showMessageDialog(this, "Produto não encontrado");
+            return;
+        }
+
+     
+           
+     txtnome.setText(produto.getNome());
+    txtcategoria.setText(produto.getCategoria());
+    txtpreco.setText(String.valueOf(produto.getPreco()));
+    txtestoque.setText(String.valueOf(produto.getEstoque()));
+      
+
+        
+        idProdutoSelecionado = produto.getId();
+
+        
+        DefaultTableModel modelo = (DefaultTableModel) tabelaProduto.getModel();
+        modelo.setRowCount(0); 
+
+        modelo.addRow(new Object[]{
+            produto.getId(),
+            produto.getNome(),
+            produto.getCategoria(),
+            produto.getPreco(),
+            produto.getEstoque()
+        });
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Digite um número válido");
+    }
     }//GEN-LAST:event_btnbuscarActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtprecoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtprecoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtprecoActionPerformed
+
+    private void btncadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncadastrarActionPerformed
+         ProdutoDAO dao = new ProdutoDAO();
+        
+        if(produto == null){
+           produto = new Produto();
+        }
+        
+        produto.setNome(txtnome.getText());
+        produto.setCategoria(txtcategoria.getText());
+        produto.setPreco(Double.parseDouble(txtpreco.getText().replace(",", ".")));
+        produto.setEstoque(Integer.parseInt(txtestoque.getText()));
+      
+         
+      dao.cadastrar(produto);
+      
+     JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso");
+        carregarLista();
+     
+    }//GEN-LAST:event_btncadastrarActionPerformed
+
+    private void tabelaProdutoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaProdutoMouseClicked
+               
+    int linha = tabelaProduto.getSelectedRow();
+    
+    if(linha != -1){
+        int id = (int) tabelaProduto.getValueAt(linha, 0);
+        
+        Produto produto = produtodao.buscarPorId(id);
+        
+       
+       
+       txtnome.setText(produto.getNome());
+        txtcategoria.setText(produto.getCategoria());
+        txtpreco.setText(String.valueOf(produto.getPreco()));
+        txtestoque.setText(String.valueOf(produto.getEstoque()));
+      
+        
+      
+        idProdutoSelecionado = produto.getId();
+    }
+    }//GEN-LAST:event_tabelaProdutoMouseClicked
+
+    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+  limparCampos();
+    }//GEN-LAST:event_btnLimparActionPerformed
 
     /**
      * @param args the command line arguments
@@ -274,6 +460,7 @@ public class TelaProduto extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnatualizar;
     private javax.swing.JButton btnbuscar;
     private javax.swing.JButton btncadastrar;
@@ -288,12 +475,12 @@ public class TelaProduto extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JTable tabelaCliente;
+    private javax.swing.JTable tabelaProduto;
+    private javax.swing.JTextField txtcategoria;
+    private javax.swing.JTextField txtestoque;
     private javax.swing.JTextField txtid;
     private javax.swing.JTextField txtnome;
-    private javax.swing.JTextField txttelefone;
+    private javax.swing.JTextField txtpreco;
     // End of variables declaration//GEN-END:variables
 }

@@ -110,7 +110,8 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnvenderActionPerformed
 
     private void botaoprodutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoprodutoActionPerformed
-        // TODO add your handling code here:
+         new TelaProduto().setVisible(true);
+         this.dispose();
     }//GEN-LAST:event_botaoprodutoActionPerformed
 
     private void btnclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnclienteActionPerformed
