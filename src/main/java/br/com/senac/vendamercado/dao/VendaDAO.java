@@ -9,6 +9,7 @@ import br.com.senac.vendamercado.data.JPAUtil;
 import br.com.senac.vendamercado.data.Produto;
 import br.com.senac.vendamercado.data.Venda;
 import jakarta.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -131,5 +132,20 @@ public class VendaDAO {
         em.close();
         return lista;
     }
+    
+    
+    public List<Venda> buscarPorData(LocalDate data) {
+    EntityManager em = JPAUtil.getEntityManager();
+
+    List<Venda> lista = em.createQuery(
+        "SELECT v FROM Venda v WHERE DATE(v.data_venda) = :data",
+        Venda.class
+    )
+    .setParameter("data", data)
+    .getResultList();
+
+    em.close();
+    return lista;
+}
 }
 

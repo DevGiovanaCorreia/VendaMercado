@@ -31,7 +31,7 @@ public class Menu extends javax.swing.JFrame {
         botaoproduto = new javax.swing.JButton();
         btnvender = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnRelatorio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -59,7 +59,12 @@ public class Menu extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("Mercado Bom Preço");
 
-        jButton1.setText("Historico de vendas");
+        btnRelatorio.setText("Relatorio do dia");
+        btnRelatorio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRelatorioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -80,9 +85,9 @@ public class Menu extends javax.swing.JFrame {
                                 .addComponent(btnvender)))
                         .addGap(34, 34, 34)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1)
+                            .addComponent(btnRelatorio)
                             .addComponent(botaoproduto))))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -96,7 +101,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnvender)
-                    .addComponent(jButton1))
+                    .addComponent(btnRelatorio))
                 .addContainerGap(84, Short.MAX_VALUE))
         );
 
@@ -128,6 +133,11 @@ public class Menu extends javax.swing.JFrame {
          new TelaCliente().setVisible(true);
          this.dispose();
     }//GEN-LAST:event_btnclienteActionPerformed
+
+    private void btnRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioActionPerformed
+           new TelaRelatorioDoDia().setVisible(true);
+           this.dispose();
+    }//GEN-LAST:event_btnRelatorioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -166,9 +176,9 @@ public class Menu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botaoproduto;
+    private javax.swing.JButton btnRelatorio;
     private javax.swing.JButton btncliente;
     private javax.swing.JButton btnvender;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
